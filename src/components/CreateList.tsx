@@ -5,7 +5,6 @@ import { gql } from 'graphql-request';
 import { TodoList } from '@/components/MyLists';
 import { MY_EMAIL_KEY } from '../constants/email';
 
-
 const CREATE_TODO_LIST_MUTATION = gql`
   mutation CreateList($input: CreateTODOListInput!) {
     createTODOList(input: $input) {
@@ -26,14 +25,25 @@ export const CreateList = ({ onCreate }: CreateListProps) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    const res = await client.request<{ createTODOList: TodoList }>(CREATE_TODO_LIST_MUTATION, {
-      input: {
-        name: formData.get('listName'),
-        email: MY_EMAIL_KEY,
-      },
+    onCreate({
+      id: 0,
+      name: formData.get('listName') as string,
+      email: MY_EMAIL_KEY,
+      created_at: new Date().toISOString(),
     });
 
-    onCreate(res.createTODOList);
+    await client.request<{ createTODOList: TodoList }>(
+      CREATE_TODO_LIST_MUTATION,
+      {
+        input: {
+          name: formData.get('listName'),
+          email: MY_EMAIL_KEY,
+        },
+      },
+    );
+
+    // clear form
+    formData.set('listName', '');
   };
 
   return (

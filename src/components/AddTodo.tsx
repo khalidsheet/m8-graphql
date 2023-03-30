@@ -5,8 +5,9 @@ type AddTODOFormProps = {
 export const AddTodo = ({ onAdd }: AddTODOFormProps) => {
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const desc = event.currentTarget.desc.value;
-    onAdd(desc);
+    const desc = event.currentTarget.desc;
+    onAdd(desc.value);
+    desc.value = '';
   };
 
   return (
